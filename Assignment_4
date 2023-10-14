@@ -1,0 +1,152 @@
+#1.Breadth First Traversal for a Graph:
+
+from collections import defaultdict
+
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def bfs(self, start):
+        visited = [False] * (max(self.graph) + 1)
+        queue = []
+        result = []
+
+        visited[start] = True
+        queue.append(start)
+
+        while queue:
+            node = queue.pop(0)
+            result.append(node)
+
+            for neighbor in self.graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+
+        return result
+
+#2.Depth First Traversal for a Graph:
+
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def dfs_util(self, node, visited, result):
+        visited[node] = True
+        result.append(node)
+
+        for neighbor in self.graph[node]:
+            if not visited[neighbor]:
+                self.dfs_util(neighbor, visited, result)
+
+    def dfs(self, start):
+        visited = [False] * (max(self.graph) + 1)
+        result = []
+        self.dfs_util(start, visited, result)
+        return result
+
+#3.Count the number of nodes at a given level in a tree using BFS:
+
+from collections import deque
+
+class TreeNode:
+    def __init__(self, value):
+        self.val = value
+        self.left = None
+        self.right = None
+
+def count_nodes_at_level(root, level):
+    if not root:
+        return 0
+
+    queue = deque([(root, 1])
+    count = 0
+
+    while queue:
+        node, current_level = queue.popleft()
+        if current_level == level:
+            count += 1
+        if node.left:
+            queue.append((node.left, current_level + 1))
+        if node.right:
+            queue.append((node.right, current_level + 1))
+
+    return count
+
+#4.Detect Cycle in a Directed Graph:
+
+from collections import defaultdict
+
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def is_cyclic_util(self, v, visited, rec_stack):
+        visited[v] = True
+        rec_stack[v] = True
+
+        for neighbor in self.graph[v]:
+            if not visited[neighbor]:
+                if self.is_cyclic_util(neighbor, visited, rec_stack):
+                    return True
+            elif rec_stack[neighbor]:
+                return True
+
+        rec_stack[v] = False
+        return False
+
+    def is_cyclic(self):
+        visited = [False] * (max(self.graph) + 1)
+        rec_stack = [False] * (max(self.graph) + 1)
+
+        for node in self.graph:
+            if not visited[node]:
+                if self.is_cyclic_util(node, visited, rec_stack):
+                    return True
+
+        return False
+
+#5.Implement n-Queens Problem:
+
+def solve_n_queens(n):
+    def is_safe(board, row, col):
+        for i in range(col):
+            if board[row][i] == 1:
+                return False
+        for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+            if board[i][j] == 1:
+                return False
+        for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+            if board[i][j] == 1:
+                return False
+        return True
+
+    def solve_n_queens_util(board, col):
+        if col >= n:
+            return True
+        for i in range(n):
+            if is_safe(board, i, col):
+                board[i][col] = 1
+                if solve_n_queens_util(board, col + 1):
+                    return True
+                board[i][col] = 0
+        return False
+
+    board = [[0] * n for _ in range(n)]
+    if not solve_n_queens_util(board, 0):
+        return []
+    
+    result = []
+    for row in board:
+        result.append(''.join('Q' if cell == 1 else '.' for cell in row))
+    
+    return result
